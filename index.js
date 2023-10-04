@@ -1,13 +1,9 @@
 // based on: https://gist.github.com/kjb/9c792f90a923b87978bf4e90cd2f6556/revisions
 
-import * as dotenv from 'dotenv';
-import fetch from 'node-fetch';
 import fs from 'fs';
 
 import { downloadAndSaveImages, filterOutExistingImages, DESTINATION_DIR } from './async.js';
 import { forEachAsyncWithDelay, jsonHeaders } from './util.js';
-
-dotenv.config();
 
 const body = {
     //   identifier_for_vendor: "does-not-matter",
