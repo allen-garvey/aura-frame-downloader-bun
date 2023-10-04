@@ -1,6 +1,4 @@
 import path from 'path';
-import fs from 'fs';
-import { doesFileExist } from './util.js';
 
 /**
  * @typedef {Object} ImageItem
@@ -10,7 +8,7 @@ import { doesFileExist } from './util.js';
  * @property {string} url
  */
 
-export const DESTINATION_DIR = 'images';
+export const DESTINATION_DIR = path.resolve(__dirname, '..', 'images');
 
 /**
  * @param {Array.<Object>} items
@@ -26,7 +24,7 @@ export const filterOutExistingImages = (items) => Promise.all(
             destination: path.join(DESTINATION_DIR, `${userId}__${fileName}`),
             url: `https://imgproxy.pushd.com/${userId}/${fileName}`,
         };
-        return doesFileExist(imageItem.destination)
+        return Bun.file(imageItem.destination).exists()
         .then(res => res ? null : imageItem);
     })
 ).then(items => items.filter(item => item !== null))
@@ -41,16 +39,11 @@ export const filterOutExistingImages = (items) => Promise.all(
  * @param {Array.<ImageItem>} items
  */
 export const downloadAndSaveImages = (item, i, items) => {
-    const destination = item.destination;
     const progressCounter = `${i+1}/${items.length}`;
-
-    return fs.promises.stat(destination).catch(() => {
-        console.log(`Downloading image ${progressCounter}`);
-        return fetch(item.url)
+    console.log(`Downloading image ${progressCounter}`);
+    return fetch(item.url)
         .then(res => {
             console.log(`Saving image ${progressCounter}`);
-            const fileStream = fs.createWriteStream(destination, { flags: 'w' });
-            return res.body.pipe(fileStream);
-        })
-    });
+            return Bun.write(item.destination, res);
+        });
 };
