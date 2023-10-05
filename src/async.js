@@ -40,10 +40,14 @@ export const filterOutExistingImages = (items) => Promise.all(
  */
 export const downloadAndSaveImages = (item, i, items) => {
     const progressCounter = `${i+1}/${items.length}`;
-    console.log(`Downloading image ${progressCounter}`);
+    console.log(`Downloading image ${progressCounter}. ${item.destination}`);
     return fetch(item.url)
+        // need to use blob instead of using res directly to write or we
+        // will get can't resolve promise with itself problems
+        // https://github.com/oven-sh/bun/issues/5970
+        .then(res => res.blob())
         .then(res => {
-            console.log(`Saving image ${progressCounter}`);
+            console.log(`Saving image ${progressCounter}. ${item.destination}`);
             return Bun.write(item.destination, res);
         });
 };

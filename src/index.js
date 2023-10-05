@@ -45,4 +45,4 @@ fs.promises.mkdir(DESTINATION_DIR, {recursive: true})
     // console.log(JSON.stringify(json));
     return filterOutExistingImages(json.assets);
 })
-.then(items => Promise.all(forEachAsyncWithDelay(items, downloadAndSaveImages)));
+.then(items => forEachAsyncWithDelay(items, downloadAndSaveImages));
