@@ -3,8 +3,6 @@ import { formatUserName, timestampToDate } from './util.js';
 
 /**
  * @typedef {Object} ImageItem
- * @property {string} fileName
- * @property {string} userId
  * @property {string} destination
  * @property {string} url
  */
